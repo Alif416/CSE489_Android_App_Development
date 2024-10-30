@@ -1,0 +1,104 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text("First Screen"),
+          backgroundColor: Colors.amber,
+        ),
+        body: const Homescreen(),
+      ),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class Homescreen extends StatefulWidget {
+  const Homescreen({super.key});
+
+  @override
+  _HomescreenState createState() => _HomescreenState();
+}
+
+class _HomescreenState extends State<Homescreen> {
+  final TextEditingController _controller = TextEditingController();
+
+  void _submitInput() {
+    final inputText = _controller.text;
+    
+    // Navigate to the Second Screen
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => SecondScreen(inputText: inputText),
+      ),
+    );
+
+    // Clear the input field after submission
+    _controller.clear();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          TextField(
+            controller: _controller,
+            decoration: const InputDecoration(
+              labelText: 'Enter something',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: _submitInput,
+            child: const Text('Submit'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class SecondScreen extends StatelessWidget {
+  final String inputText;
+
+  const SecondScreen({required this.inputText, super.key});
+
+  String _toPalindrome(String text) {
+    // Remove non-alphanumeric characters and convert to lower case
+    String cleanedText = text.replaceAll(RegExp(r'[^a-zA-Z0-9]'), '').toLowerCase();
+    String reversedText = cleanedText.split('').reversed.join('');
+    
+    return cleanedText + reversedText;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final palindromeText = _toPalindrome(inputText);
+    
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Second Screen"),
+        backgroundColor: Colors.amber,
+      ),
+      body: Center(
+        child: Text(
+          'Palindrome: $palindromeText',
+          style: const TextStyle(fontSize: 24),
+        ),
+      ),
+    );
+  }
+}
